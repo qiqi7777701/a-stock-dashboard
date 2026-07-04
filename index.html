@@ -37,3 +37,63 @@
     </div>
 </body>
 </html>
+
+
+<!-- Codex system status panel start -->
+
+<section id="codex-system-status" style="margin:24px auto;padding:16px;max-width:960px;border:1px solid #2b8cff;border-radius:8px;background:#071827;color:#eaf6ff;font-family:Arial,'Microsoft YaHei',sans-serif;">
+
+  <h2 style="margin:0 0 12px;font-size:18px;">系统状态面板</h2>
+
+  <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;">
+
+    <div>
+
+      <strong>当前时间</strong>
+
+      <p id="codex-current-time" style="margin:6px 0 0;">--</p>
+
+    </div>
+
+    <div>
+
+      <strong>Git commit hash</strong>
+
+      <p style="margin:6px 0 0;">mock-main-status</p>
+
+    </div>
+
+    <div>
+
+      <strong>系统状态</strong>
+
+      <p style="margin:6px 0 0;color:#22c55e;">ONLINE</p>
+
+    </div>
+
+  </div>
+
+</section>
+
+<script>
+
+  (function () {
+
+    function updateCodexTime() {
+
+      var el = document.getElementById('codex-current-time');
+
+      if (el) el.textContent = new Date().toLocaleString();
+
+    }
+
+    updateCodexTime();
+
+    setInterval(updateCodexTime, 1000);
+
+  })();
+
+</script>
+
+<!-- Codex system status panel end -->
+
