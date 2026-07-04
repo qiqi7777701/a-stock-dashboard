@@ -1,99 +1,348 @@
 <!doctype html>
-<html>
+<html lang="zh-CN">
 <head>
-    <meta charset="utf-8">
-    <title>恭喜，站点创建成功！</title>
-    <style>
-        .container {
-            width: 60%;
-            margin: 10% auto 0;
-            background-color: #f0f0f0;
-            padding: 2% 5%;
-            border-radius: 10px
-        }
-
-        ul {
-            padding-left: 20px;
-        }
-
-            ul li {
-                line-height: 2.3
-            }
-
-        a {
-            color: #20a53a
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>恭喜, 站点创建成功！</h1>
-        <h3>这是默认index.html，本页面由系统自动生成</h3>
-        <ul>
-            <li>本页面在FTP根目录下的index.html</li>
-            <li>您可以修改、删除或覆盖本页面</li>
-            <li>FTP相关信息，请到“面板系统后台 > FTP” 查看</li>
-        </ul>
-    </div>
-</body>
-</html>
-
-
-<!-- Codex system status panel start -->
-
-<section id="codex-system-status" style="margin:24px auto;padding:16px;max-width:960px;border:1px solid #2b8cff;border-radius:8px;background:#071827;color:#eaf6ff;font-family:Arial,'Microsoft YaHei',sans-serif;">
-
-  <h2 style="margin:0 0 12px;font-size:18px;">系统状态面板</h2>
-
-  <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;">
-
-    <div>
-
-      <strong>当前时间</strong>
-
-      <p id="codex-current-time" style="margin:6px 0 0;">--</p>
-
-    </div>
-
-    <div>
-
-      <strong>Git commit hash</strong>
-
-      <p style="margin:6px 0 0;">mock-main-status</p>
-
-    </div>
-
-    <div>
-
-      <strong>系统状态</strong>
-
-      <p style="margin:6px 0 0;color:#22c55e;">ONLINE</p>
-
-    </div>
-
-  </div>
-
-</section>
-
-<script>
-
-  (function () {
-
-    function updateCodexTime() {
-
-      var el = document.getElementById('codex-current-time');
-
-      if (el) el.textContent = new Date().toLocaleString();
-
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>A 股行情驾驶舱</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f4f6f8;
+      --panel: #ffffff;
+      --text: #17202a;
+      --muted: #667085;
+      --line: #d9e1ea;
+      --green: #0f9d58;
+      --red: #d93025;
+      --blue: #1a73e8;
+      --amber: #b36b00;
     }
 
-    updateCodexTime();
+    * {
+      box-sizing: border-box;
+    }
 
-    setInterval(updateCodexTime, 1000);
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Arial, "Microsoft YaHei", sans-serif;
+    }
 
-  })();
+    .shell {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 28px 0 40px;
+    }
 
-</script>
+    .topbar {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 20px;
+      padding-bottom: 22px;
+      border-bottom: 1px solid var(--line);
+    }
 
-<!-- Codex system status panel end -->
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(28px, 4vw, 44px);
+      line-height: 1.1;
+      letter-spacing: 0;
+    }
 
+    .subtitle {
+      margin: 0;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .market-state {
+      min-width: 220px;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      text-align: right;
+    }
+
+    .market-state strong {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .market-state span {
+      font-size: 20px;
+      color: var(--green);
+      font-weight: 700;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 16px;
+      margin-top: 22px;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 18px;
+    }
+
+    .panel h2 {
+      margin: 0 0 16px;
+      font-size: 18px;
+      letter-spacing: 0;
+    }
+
+    .span-8 {
+      grid-column: span 8;
+    }
+
+    .span-4 {
+      grid-column: span 4;
+    }
+
+    .span-12 {
+      grid-column: span 12;
+    }
+
+    .indices {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .index-card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 14px;
+      min-height: 128px;
+    }
+
+    .index-card .name {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .index-card .value {
+      margin: 12px 0 6px;
+      font-size: 28px;
+      font-weight: 700;
+    }
+
+    .up {
+      color: var(--red);
+    }
+
+    .down {
+      color: var(--green);
+    }
+
+    .flat {
+      color: var(--amber);
+    }
+
+    .metric-row,
+    .status-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 11px 0;
+      border-bottom: 1px solid var(--line);
+      font-size: 14px;
+    }
+
+    .metric-row:last-child,
+    .status-row:last-child {
+      border-bottom: 0;
+    }
+
+    .metric-row span,
+    .status-row span {
+      color: var(--muted);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    th,
+    td {
+      padding: 12px 8px;
+      border-bottom: 1px solid var(--line);
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    th:first-child,
+    td:first-child,
+    th:nth-child(2),
+    td:nth-child(2) {
+      text-align: left;
+    }
+
+    th {
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: #e8f0fe;
+      color: var(--blue);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    @media (max-width: 860px) {
+      .topbar {
+        display: block;
+      }
+
+      .market-state {
+        margin-top: 16px;
+        text-align: left;
+      }
+
+      .span-8,
+      .span-4 {
+        grid-column: span 12;
+      }
+
+      .indices {
+        grid-template-columns: 1fr;
+      }
+
+      .table-wrap {
+        overflow-x: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <div>
+        <h1>A 股行情驾驶舱</h1>
+        <p class="subtitle">跟踪主要指数、资金温度与重点股票，页面已替换默认站点占位内容。</p>
+      </div>
+      <div class="market-state">
+        <strong>页面状态</strong>
+        <span>ONLINE</span>
+      </div>
+    </header>
+
+    <section class="grid" aria-label="市场概览">
+      <div class="panel span-8">
+        <h2>主要指数</h2>
+        <div class="indices">
+          <div class="index-card">
+            <div class="name">上证指数</div>
+            <div class="value">3,462.81</div>
+            <div class="up">+0.68% / +23.41</div>
+          </div>
+          <div class="index-card">
+            <div class="name">深证成指</div>
+            <div class="value">10,884.29</div>
+            <div class="up">+0.92% / +99.12</div>
+          </div>
+          <div class="index-card">
+            <div class="name">创业板指</div>
+            <div class="value">2,216.45</div>
+            <div class="down">-0.14% / -3.10</div>
+          </div>
+        </div>
+      </div>
+
+      <aside class="panel span-4">
+        <h2>盘面指标</h2>
+        <div class="metric-row"><span>上涨家数</span><strong class="up">3,184</strong></div>
+        <div class="metric-row"><span>下跌家数</span><strong class="down">1,721</strong></div>
+        <div class="metric-row"><span>成交额</span><strong>9,842 亿</strong></div>
+        <div class="metric-row"><span>北向资金</span><strong class="up">+38.6 亿</strong></div>
+      </aside>
+
+      <section class="panel span-12">
+        <h2>关注列表</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>代码</th>
+                <th>名称</th>
+                <th>最新价</th>
+                <th>涨跌幅</th>
+                <th>成交额</th>
+                <th>标签</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>600519</td>
+                <td>贵州茅台</td>
+                <td>1,486.20</td>
+                <td class="up">+1.12%</td>
+                <td>42.8 亿</td>
+                <td><span class="tag">白酒</span></td>
+              </tr>
+              <tr>
+                <td>300750</td>
+                <td>宁德时代</td>
+                <td>214.73</td>
+                <td class="down">-0.36%</td>
+                <td>57.1 亿</td>
+                <td><span class="tag">新能源</span></td>
+              </tr>
+              <tr>
+                <td>601318</td>
+                <td>中国平安</td>
+                <td>47.58</td>
+                <td class="up">+0.44%</td>
+                <td>18.9 亿</td>
+                <td><span class="tag">金融</span></td>
+              </tr>
+              <tr>
+                <td>688981</td>
+                <td>中芯国际</td>
+                <td>92.06</td>
+                <td class="flat">+0.03%</td>
+                <td>35.4 亿</td>
+                <td><span class="tag">半导体</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel span-12">
+        <h2>部署状态</h2>
+        <div class="status-row"><span>当前页面时间</span><strong id="current-time">--</strong></div>
+        <div class="status-row"><span>部署分支</span><strong>main</strong></div>
+        <div class="status-row"><span>站点路径</span><strong>/dashboard</strong></div>
+      </section>
+    </section>
+  </main>
+
+  <script>
+    function updateTime() {
+      var el = document.getElementById('current-time');
+      if (el) {
+        el.textContent = new Date().toLocaleString('zh-CN', { hour12: false });
+      }
+    }
+
+    updateTime();
+    setInterval(updateTime, 1000);
+  </script>
+</body>
+</html>
